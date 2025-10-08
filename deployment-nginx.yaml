@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 5
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.24
+        ports:
+        - containerPort: 80
+          name: http      
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+            ephemeral-storage: 1Gi
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+            ephemeral-storage: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 3
+          periodSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /
+            port: http
+          failureThreshold: 30
+          periodSeconds: 3
+        env:
+          - name: NGINX_ENTRYPOINT_QUIET_LOGS
+            value: "1"
+        args:
+          - nginx-debug
+          - -g
+          - 'daemon off;'

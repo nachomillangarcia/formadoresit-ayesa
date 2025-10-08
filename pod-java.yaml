@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: java
+spec:
+  containers:
+    - name: java
+      image: nachomillangarcia/ayesa-java-api
+      ports:
+        - containerPort: 8080
+
+

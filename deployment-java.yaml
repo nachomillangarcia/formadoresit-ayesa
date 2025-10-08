@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-deployment
+spec:
+  replicas: 1
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: java-api
+  template:
+    metadata:
+      labels:
+        app: java-api
+    spec:
+      containers:
+      - name: java-api
+        image: nachomillangarcia/ayesa-java-api
+        ports:
+        - containerPort: 8080
+          name: http      
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+            ephemeral-storage: 1Gi
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+            ephemeral-storage: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 3
+          periodSeconds: 5
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+          failureThreshold: 30
+          periodSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-api
+spec:
+  selector:
+    app: java-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: java-api-ingress
+  annotations:
+      nginx.ingress.kubernetes.io/use-regex: "true"
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /api(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: java-api
+            port:
+              number: 80
