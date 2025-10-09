@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: java-api
-        image: nachomillangarcia/ayesa-java-api
+        image: nachomillangarcia/ayesa-java-api:v2
         ports:
         - containerPort: 8080
           name: http      
@@ -44,6 +44,20 @@ spec:
             port: http
           failureThreshold: 30
           periodSeconds: 3
+        env:
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: java-api
+                key: LOG_LEVEL
+        volumeMounts:
+          - name: config-volume
+            mountPath: /config        
+      volumes:
+        - name: config-volume
+          configMap:
+            name: java-api
+        
 
 ---
 

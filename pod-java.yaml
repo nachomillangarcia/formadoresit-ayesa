@@ -8,5 +8,10 @@ spec:
       image: nachomillangarcia/ayesa-java-api
       ports:
         - containerPort: 8080
-
-
+      volumeMounts:
+        - mountPath: /persistent
+          name: test-volume
+  volumes:
+    - name: test-volume
+      persistentVolumeClaim:
+        claimName: local-hostpath-pvc
