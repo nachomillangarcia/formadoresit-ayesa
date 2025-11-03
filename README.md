@@ -1,2 +1,1 @@
-# formadoresit-ayesa
-Curso FormadoresIT - Kubernetes
+# Kubernetes, ArgoCD y Helm - FormadoresIT - Ayesa
