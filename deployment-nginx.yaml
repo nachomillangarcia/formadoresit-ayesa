@@ -22,3 +22,10 @@ spec:
           image: nginx:1.28
           ports:
           - containerPort: 80
+          volumeMounts:
+          - name: config
+            mountPath: /root/config
+      volumes:
+        - name: config
+          configMap:
+            name: api-java

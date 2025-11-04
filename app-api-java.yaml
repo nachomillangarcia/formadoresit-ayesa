@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-java-deployment
+spec:
+  replicas: 2
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: api-java
+  template:  
+    metadata:
+      labels:
+        app: api-java
+    spec:
+      containers:
+        - name: api
+          image: nachomillangarcia/ayesa-java-api
+          ports:
+          - containerPort: 8080
+          volumeMounts:
+          - name: config
+            mountPath: /config
+
+      volumes:
+        - name: config
+          configMap:
+            name: api-java
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-java
+spec:
+  selector:
+    app: api-java
+  ports:
+  - protocol: TCP
+    name: http
+    port: 80
+    targetPort: 8080
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: java-api-ingress
+spec:
+  ingressClassName: public
+  rules:
+  - host: api-java.18.153.62.218.sslip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api-java
+            port:
+              number: 80
