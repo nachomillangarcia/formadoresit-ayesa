@@ -22,9 +22,17 @@ spec:
           image: nachomillangarcia/ayesa-java-api
           ports:
           - containerPort: 8080
+            name: http
           volumeMounts:
           - name: config
             mountPath: /config
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
 
       volumes:
         - name: config

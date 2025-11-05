@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nginx-deployment
 spec:
-  replicas: 5
+  replicas: 1
   strategy: 
     type: RollingUpdate
     rollingUpdate:
@@ -17,15 +17,72 @@ spec:
       labels:
         app: nginx
     spec:
+      # imagePullSecrets:
+      # - name: regcred
       containers:
         - name: nginx
           image: nginx:1.28
           ports:
           - containerPort: 80
-          volumeMounts:
-          - name: config
-            mountPath: /root/config
-      volumes:
-        - name: config
-          configMap:
-            name: api-java
+            name: http
+          resources:
+            limits:
+              cpu: 300m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 3
+            periodSeconds: 5
+
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 5
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            failureThreshold: 3
+            periodSeconds: 5
+
+          env:
+            - name: MY_VAR
+              value: MY_VALUE
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: api-java
+                  key: LOG_LEVEL
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          envFrom:
+            - configMapRef:
+                name: api-java
+          # command:
+          args:
+            - nginx-debug
+            - '-g'
+            - 'daemon off;'
+
+      #     volumeMounts:
+      #     - name: config
+      #       mountPath: /root/config
+      #     - name: data
+      #       mountPath: /persistent-disk 
+      # volumes:
+      #   - name: config
+      #     secret:
+      #       secretName: database-credentials
+      #   - name: data
+      #     persistentVolumeClaim:
+      #       claimName: local-hostpath-pvc
