@@ -9,6 +9,10 @@
     - [Deployments (deploy)](#deployments-deploy)
     - [DeamonSets (ds)](#deamonsets-ds)
     - [Jobs](#jobs)
+    - [Cronjobs](#cronjobs)
+    - [Services (svc)](#services-svc)
+    - [Ingress (ing)](#ingress-ing)
+    - [Configmaps (cm)](#configmaps-cm)
 
 
 # Kubernetes
@@ -110,3 +114,52 @@ https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/
 Run a pod that runs a task meant to have an end. Once the tasks inide the containers ends with success, it's marked as completed and does not run anymore. If the task fails, it retries with a configurable policy.
 
 https://kubernetes.io/docs/concepts/workloads/controllers/job/
+
+### Cronjobs
+
+A cronjob creates jobs according to a specific schedule.
+
+https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+
+### Services (svc)
+
+Services provides a private IP that balances traffic among similar pods.
+
+There can also open a 
+
+https://kubernetes.io/docs/concepts/services-networking/service/
+
+List endpoints for a service: `kubectl get endpoint <SERVICE> -o yaml>`
+
+DNS address for internal communication with a service: `<SERVICE>.<NAMESPACE>.svc.cluster.local`
+
+
+### Ingress (ing)
+
+**Ingress Controller** is just a reverse proxy that reads all ingresses in the cluster and configure itself to route HTTP and HTTPS traffic to the services accourding to the ingresses in the cluster. It acts as a sigle entry point for all HTTP traffic to all services in the cluster:
+
+https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+
+There are many different options to deploy as ingress controller for the cluster
+
+
+**Ingress** is the resource that contains the rules to route traffic to a given service. Usually you have one ingress per service:
+
+https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+
+Everytime you create an ingress, the ingress controller reads it and configure itself to route traffic using those rules.
+
+**Nginx Ingress Controller** is the official ingress controller for Kubernetes:
+
+https://kubernetes.github.io/ingress-nginx/
+
+Deploy Nginx Ingress Controller in microk8s: `microk8s enable ingress`
+
+You can set advanced configuration in the ingresses using annotations: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/
+
+### Configmaps (cm)
+
+https://kubernetes.io/docs/concepts/configuration/configmap/
+
+You can use a configmap to mount files into pods and set environment variables.
