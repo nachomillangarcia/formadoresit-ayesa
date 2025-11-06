@@ -17,11 +17,12 @@ spec:
       labels:
         app: nginx
     spec:
+      serviceAccountName: nginx
       # imagePullSecrets:
       # - name: regcred
       containers:
         - name: nginx
-          image: nginx:1.28
+          image: nginx:1.29
           ports:
           - containerPort: 80
             name: http
@@ -36,20 +37,20 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 81
             failureThreshold: 3
             periodSeconds: 5
 
           startupProbe:
             httpGet:
               path: /
-              port: http
+              port: 81
             periodSeconds: 5
 
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 81
             failureThreshold: 3
             periodSeconds: 5
 
@@ -74,15 +75,16 @@ spec:
             - '-g'
             - 'daemon off;'
 
-      #     volumeMounts:
-      #     - name: config
-      #       mountPath: /root/config
-      #     - name: data
-      #       mountPath: /persistent-disk 
-      # volumes:
-      #   - name: config
-      #     secret:
-      #       secretName: database-credentials
-      #   - name: data
-      #     persistentVolumeClaim:
-      #       claimName: local-hostpath-pvc
+          volumeMounts:
+          - name: config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+          # - name: data
+          #   mountPath: /persistent-disk 
+      volumes:
+        - name: config
+          configMap:
+            name: config-nginx
+        # - name: data
+        #   persistentVolumeClaim:
+        #     claimName: local-hostpath-pvc

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: chart-api-java
+description: Chart to deploy Java API for Kubernetes course for Ayesa
+version: 1.0.0
+appVersion: 1.0.0

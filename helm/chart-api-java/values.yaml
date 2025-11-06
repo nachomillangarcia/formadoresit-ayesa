@@ -1,0 +1,3 @@
+deployment:
+  replicas: 3
+  configPath: /config

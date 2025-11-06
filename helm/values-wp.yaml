@@ -1,0 +1,28 @@
+wordpressUsername: nacho
+wordpressPassword: "321654"
+
+resources:
+  requests:
+    cpu: "0.2"
+    memory: 256Mi
+  limits:
+    cpu: "0.5"
+    memory: 512Mi
+
+mariadb:
+  primary:
+    resources:
+      requests:
+        cpu: "0.1"
+        memory: 256Mi
+      limits:
+        cpu: "0.5"
+        memory: 512Mi
+
+service:
+  type: NodePort
+  nodePorts:
+    http: 30180
+
+global:
+  defaultStorageClass: openebs-hostpath

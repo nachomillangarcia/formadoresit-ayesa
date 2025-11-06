@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ Release.Namespace }}
+spec:
+  replicas: {{ .Values.deployment.replicas | default 1 }}
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: api-java
+  template:  
+    metadata:
+      labels:
+        app: api-java
+    spec:
+      containers:
+        - name: api
+          image: nachomillangarcia/ayesa-java-api
+          ports:
+          - containerPort: 8080
+            name: http
+          volumeMounts:
+          - name: config
+            mountPath: {{ .Values.deployment.configPath | quote }}
+          resources:
+            limits:
+              cpu: 300m
+              memory: 200Mi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-configmap
