@@ -1,3 +1,30 @@
 deployment:
   replicas: 3
+  strategy: RollingUpdate
   configPath: /config
+  annotations:
+    myannotation1: value1
+    myannotation2: value2
+    myannotation3: value3
+  resources:
+    limits:
+      cpu: 300m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 200Mi
+
+configMap:
+  enabled: true
+  configs:
+    myconfig1:
+      name: config
+
+protocol: https
+
+volumeMounts:
+- name: config
+  path: /config 
+
+type: mytype
+

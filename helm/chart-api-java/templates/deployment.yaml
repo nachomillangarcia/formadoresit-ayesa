@@ -1,12 +1,21 @@
+{{- $protocol := .Values.protocol }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-deployment
-  namespace: {{ Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- range $name, $value := .Values.deployment.annotations }}
+    {{ $name }}: {{ $value | upper | quote }}
+    {{- end }}    
 spec:
-  replicas: {{ .Values.deployment.replicas | default 1 }}
+  {{- with .Values.deployment }}
+  replicas: {{ .replicas | default 1 }}
   strategy: 
-    type: RollingUpdate
+    type: {{ .strategy}}
+  {{- end }} 
+
     rollingUpdate:
       maxUnavailable: 0
       maxSurge: 1
@@ -22,19 +31,30 @@ spec:
         - name: api
           image: nachomillangarcia/ayesa-java-api
           ports:
+          {{- if eq $protocol "http" }}
           - containerPort: 8080
             name: http
+          {{- else if eq $protocol "https"}}
+          - containerPort: 8443
+            name: https
+          {{- else -}}
+          {{- end }}
+          
           volumeMounts:
-          - name: config
-            mountPath: {{ .Values.deployment.configPath | quote }}
+          {{- range .Values.volumeMounts }}
+          - name: {{ .name | quote }}
+            mountPath: {{ .path | quote }}
+          {{- end }}
+
           resources:
-            limits:
-              cpu: 300m
-              memory: 200Mi
-            requests:
-              cpu: 100m
-              memory: 200Mi
+          {{- toYaml .Values.deployment.resources | nindent 12 }}
+
+      {{- if .Values.configMap.enabled }}
       volumes:
-        - name: config
+      {{- range $conf := .Values.configMap.configs }}
+        - name: {{ $conf.name }}
           configMap:
-            name: {{ .Release.Name }}-configmap
+            name: {{ $.Release.Name }}-configmap
+      {{- end }}
+      
+      {{- end }}
