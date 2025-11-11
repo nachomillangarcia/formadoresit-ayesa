@@ -1,0 +1,18 @@
+apiVersion: v1
+entries:
+  chart-api-java:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-11-11T16:14:46.547557896Z"
+    dependencies:
+    - condition: mysql.enabled
+      name: mysql
+      repository: https://charts.bitnami.com/bitnami
+      version: 14.0.3
+    description: Chart to deploy Java API for Kubernetes course for Ayesa
+    digest: a01ed673847dedc94156028aec5f5bcfa40f186e5821d5e1da70e7248aea982c
+    name: chart-api-java
+    urls:
+    - chart-api-java-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-11-11T16:14:46.536337687Z"

@@ -13,7 +13,7 @@ spec:
   {{- with .Values.deployment }}
   replicas: {{ .replicas | default 1 }}
   strategy: 
-    type: {{ .strategy}}
+    type: {{ .strategy }}
   {{- end }} 
 
     rollingUpdate:

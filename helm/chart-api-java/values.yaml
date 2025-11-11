@@ -28,3 +28,10 @@ volumeMounts:
 
 type: mytype
 
+mysql:
+  enabled: true
+  auth:
+    rootPassword: "8QjKCL8iak"
+  image: 
+    repository: bitnamilegacy/mysql
+    tag: 9.4.0
