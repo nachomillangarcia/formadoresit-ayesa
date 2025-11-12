@@ -10,23 +10,16 @@ spec:
     name: elasticsearch
   kibanaRef:
     name: kibana
+  monitoring:  # Add this section for stack monitoring
+    metrics:
+      elasticsearchRefs:
+      - name: elasticsearch  # Your monitoring ES cluster name
+        namespace: elastic  # Adjust if in a different namespace
   config:
     http:
       enabled: true
       host: 0.0.0.0
       port: 5066
-    # logging.level: debug
-    # filebeat.inputs:
-    #   - type: filestream
-    #     id: unique-input-id
-    #     prospector.scanner.symlinks: true
-    #     parsers:
-    #       - container:
-    #           stream: all
-    #           format: cri
-    #     paths:
-    #       - '/var/log/containers/*'
-
     filebeat:
       autodiscover:
         providers:
@@ -53,6 +46,7 @@ spec:
                   symlinks: true
                   check_interval: 10s        # how often to rescan
                   exclude_files: ['\.gz$']   # skip rotated files
+
   daemonSet:
     podTemplate:
       spec:

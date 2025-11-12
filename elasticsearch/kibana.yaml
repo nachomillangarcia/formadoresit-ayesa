@@ -6,6 +6,15 @@ metadata:
 spec:
   version: 9.2.0
   count: 1
+  monitoring:
+    metrics:
+      elasticsearchRefs:
+      - name: elasticsearch  # Your monitoring ES cluster name
+        namespace: elastic  # Adjust if in a different namespace
+    logs:
+      elasticsearchRefs:
+      - name: elasticsearch  # Your monitoring ES cluster name
+        namespace: elastic  # Adjust if in a different namespace
   elasticsearchRef:
     name: elasticsearch
   http:

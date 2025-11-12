@@ -16,6 +16,9 @@ spec:
     metadata:
       labels:
         app: nginx
+      annotations:
+        co.elastic.logs/module: "nginx"
+        co.elastic.logs/fileset.stdout: "access"
     spec:
       serviceAccountName: nginx
       # imagePullSecrets:
@@ -37,54 +40,54 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: 81
+              port: 80
             failureThreshold: 3
             periodSeconds: 5
 
           startupProbe:
             httpGet:
               path: /
-              port: 81
+              port: 80
             periodSeconds: 5
 
           readinessProbe:
             httpGet:
               path: /
-              port: 81
+              port: 80
             failureThreshold: 3
             periodSeconds: 5
 
           env:
             - name: MY_VAR
               value: MY_VALUE
-            - name: LOG_LEVEL
-              valueFrom:
-                configMapKeyRef:
-                  name: api-java
-                  key: LOG_LEVEL
+            # - name: LOG_LEVEL
+            #   valueFrom:
+            #     configMapKeyRef:
+            #       name: api-java
+            #       key: LOG_LEVEL
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          envFrom:
-            - configMapRef:
-                name: api-java
+          # envFrom:
+          #   - configMapRef:
+          #       name: api-java
           # command:
           args:
             - nginx-debug
             - '-g'
             - 'daemon off;'
 
-          volumeMounts:
-          - name: config
-            mountPath: /etc/nginx/nginx.conf
-            subPath: nginx.conf
+          # volumeMounts:
+          # - name: config
+          #   mountPath: /etc/nginx/nginx.conf
+          #   subPath: nginx.conf
           # - name: data
           #   mountPath: /persistent-disk 
-      volumes:
-        - name: config
-          configMap:
-            name: config-nginx
+      # volumes:
+        # - name: config
+        #   configMap:
+        #     name: config-nginx
         # - name: data
         #   persistentVolumeClaim:
         #     claimName: local-hostpath-pvc

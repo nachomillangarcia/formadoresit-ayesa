@@ -4,6 +4,15 @@ metadata:
   name: elasticsearch
   namespace: elastic
 spec:
+  monitoring:  # Add this section for stack monitoring
+    metrics:
+      elasticsearchRefs:
+      - name: elasticsearch  # Your monitoring ES cluster name
+        namespace: elastic  # Adjust if in a different namespace
+    logs:
+      elasticsearchRefs:
+      - name: elasticsearch  # Your monitoring ES cluster name
+        namespace: elastic  # Adjust if in a different namespace
   version: 9.2.0
   nodeSets:
   - name: default
