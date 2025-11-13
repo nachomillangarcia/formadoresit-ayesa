@@ -1,0 +1,30 @@
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelector: {}
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+  service:
+    type: NodePort
+
+
+alertmanager:
+  alertmanagerSpec:
+    replicas: 2
+  service:
+    type: NodePort
+
+grafana:
+  service: 
+    type: NodePort
+    nodePort: 30091
+  persistence:
+    enabled: true
+    storageClassName: openebs-hostpath
