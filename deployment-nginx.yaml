@@ -29,6 +29,8 @@ spec:
           ports:
           - containerPort: 80
             name: http
+          - containerPort: 8081
+            name: metrics
           resources:
             limits:
               cpu: 300m
@@ -78,16 +80,28 @@ spec:
             - '-g'
             - 'daemon off;'
 
-          # volumeMounts:
-          # - name: config
-          #   mountPath: /etc/nginx/nginx.conf
+          volumeMounts:
+          - name: config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+          - name: config
+            mountPath: /etc/nginx/conf.d/status.conf
+            subPath: status.conf
           #   subPath: nginx.conf
           # - name: data
           #   mountPath: /persistent-disk 
-      # volumes:
-        # - name: config
-        #   configMap:
-        #     name: config-nginx
+        - name: metrics-exporter
+          image: nginx/nginx-prometheus-exporter:1.5.1
+          ports:
+          - containerPort: 9113
+            name: prometheus
+          args:
+          - --nginx.scrape-uri=http://127.0.0.1:8081/stub_status
+
+      volumes:
+        - name: config
+          configMap:
+            name: config-nginx
         # - name: data
         #   persistentVolumeClaim:
         #     claimName: local-hostpath-pvc

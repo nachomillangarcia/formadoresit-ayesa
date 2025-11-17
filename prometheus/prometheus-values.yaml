@@ -14,12 +14,92 @@ prometheus:
   service:
     type: NodePort
 
+additionalPrometheusRulesMap:
+  my-node-requests.rules:
+    groups:
+      - name: node-requests.rules
+        rules:
+        - record: node:memory_requests:ratio
+          expr: |-
+            sum by (node) (kube_pod_container_resource_requests{resource="memory"}) 
+
+            / on(node)
+
+            kube_node_status_allocatable{resource="memory"}
+
+            * 100
+  my-node-requests-alerts:
+    groups:
+      - name: node-requests-alerts
+        rules:
+        - alert: NodeMemoryRequestsHigh
+          annotations:
+            description: |
+              {{ $labels.node }} node memory requests are over 4%, currently at {{ $value }}%
+            summary: Node has high memory requests
+          expr: node:memory_requests:ratio > 4
+          for: 5m
+          labels:
+            severity: warning
+            node: |-
+              {{ $labels.node }}
 
 alertmanager:
   alertmanagerSpec:
     replicas: 2
   service:
     type: NodePort
+
+  config:
+    global:
+      resolve_timeout: 5m
+      http_config:
+        follow_redirects: true
+        enable_http2: true
+    route:
+      receiver: "default"  # Fallback Receiver if no routes are matched
+      continue: false
+      routes:
+      - receiver: "null"
+        matchers:
+        - alertname="Watchdog"
+        continue: false
+      - receiver: "teamA"
+        matchers:
+        - namespace="default"
+        continue: false
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+    inhibit_rules:
+    - source_matchers:
+      - severity="critical"
+      target_matchers:
+      - severity=~"warning|info"
+      equal:
+      - namespace
+      - alertname
+    - source_matchers:
+      - severity="warning"
+      target_matchers:
+      - severity="info"
+      equal:
+      - namespace
+      - alertname
+    - source_matchers:
+      - alertname="InfoInhibitor"
+      target_matchers:
+      - severity="info"
+      equal:
+      - namespace
+    - target_matchers:
+      - alertname="InfoInhibitor"
+    receivers:
+    - name: "default"
+    - name: "teamA"
+    - name: "null"
+    templates:
+    - /etc/alertmanager/config/*.tmpl
 
 grafana:
   service: 
