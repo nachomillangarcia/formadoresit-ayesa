@@ -105,3 +105,43 @@ spec:
         # - name: data
         #   persistentVolumeClaim:
         #     claimName: local-hostpath-pvc
+      
+      nodeSelector:
+        app: data-processing
+
+      affinity:
+        nodeAffinity:
+          # requiredDuringSchedulingIgnoredDuringExecution:
+          #   nodeSelectorTerms:
+          #   - matchExpressions:
+          #     - key: topology.kubernetes.io/zone
+          #       operator: In
+          #       values:
+          #       - eu-central-1a
+          #       - eu-central-1b
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            preference:
+              matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: In
+                values:
+                - worker
+
+        # podAntiAffinity:
+        #   requiredDuringSchedulingIgnoredDuringExecution:
+        #   - labelSelector:
+        #       matchExpressions:
+        #       - key: app
+        #       operator: In
+        #       values:
+        #       - nginx
+        #     topologyKey: "kubernetes.io/hostname"
+
+      tolerations:
+        - key: "workload"
+          operator: "Equal"
+          value: "database"
+          effect: "NoSchedule"
+
+      priorityClassName: high-priority

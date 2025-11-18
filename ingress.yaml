@@ -2,10 +2,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: nginx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    cert-manager.io/cluster-issuer: "local-ca-issuer"
 spec:
-  ingressClassName: public
+  ingressClassName: nginx-public
   rules:
-  - host: nginx.18.153.62.218.sslip.io
+  - host: nginx.3.68.218.41.sslip.io
     http:
       paths:
       - path: /
@@ -16,5 +20,8 @@ spec:
             port:
               number: 80
 
-
+  tls:
+    - hosts:
+        - nginx.3.68.218.41.sslip.io
+      secretName: nginx-tls
 
