@@ -11,8 +11,30 @@ prometheus:
             requests:
               storage: 10Gi
 
+    thanosImage:
+      registry: quay.io
+      repository: thanos/thanos
+      tag: v0.39.2
+      sha: ""
+    thanos:
+      objectStorageConfig:
+        secret:
+          type: S3
+          config:
+            bucket: thanos-formadoresit
+            endpoint: s3.eu-central-1.amazonaws.com
+            region: eu-central-1
+          # access_key: 
+          # secret_key:
+
+
   service:
     type: NodePort
+  thanosService:
+    enabled: true
+  thanosServiceMonitor:
+    enabled: true
+    interval: "1m"
 
 additionalPrometheusRulesMap:
   my-node-requests.rules:
@@ -108,3 +130,19 @@ grafana:
   persistence:
     enabled: true
     storageClassName: openebs-hostpath
+
+
+thanosRuler:
+  enabled: true
+  thanosRulerSpec:
+    objectStorageConfig:
+      secret:
+        type: S3
+        config:
+          bucket: thanos-formadoresit
+          endpoint: s3.eu-central-1.amazonaws.com
+          region: eu-central-1
+          # access_key: 
+          # secret_key: 
+    queryEndpoints:
+      - "dnssrv+_http._tcp.thanos-query.monitoring.svc.cluster.local"

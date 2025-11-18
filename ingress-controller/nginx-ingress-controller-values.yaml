@@ -1,0 +1,14 @@
+controller:
+  hostPort:
+    # -- Enable 'hostPort' or not
+    enabled: true
+    ports:
+      # -- 'hostPort' http port
+      http: 80
+      # -- 'hostPort' https port
+      https: 443
+  updateStrategy:
+    type: Recreate
+  ingressClassResource:
+    # -- Name of the IngressClass
+    name: nginx-public
