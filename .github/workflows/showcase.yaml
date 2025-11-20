@@ -11,6 +11,9 @@ on:
 jobs:
   showcase:
     runs-on: ubuntu-24.04
+    outputs:
+      fruit: ${{steps.set_outputs.outputs.fruit}}
+      count: ${{steps.set_outputs.outputs.count}}
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
 
@@ -57,3 +60,9 @@ jobs:
         with:
             name: output
             path: output.txt
+
+  dependent:
+    needs: showcase
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "I have ${{ needs.showcase.outputs.count }} ${{ needs.showcase.outputs.fruit }}(s)"
