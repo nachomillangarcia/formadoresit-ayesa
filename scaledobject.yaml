@@ -1,0 +1,28 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: nginx-scaledobject
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-deployment
+  minReplicaCount: 1
+  maxReplicaCount: 6
+
+  pollingInterval: 30
+  cooldownPeriod: 30
+  initialCooldownPeriod: 0
+  fallback:
+    failureThreshold: 3
+    replicas: 3
+    behavior: "static"
+
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring.svc.cluster.local:9090
+        metricName: nginx_http_requests_total
+        threshold: '30'
+        #activationThreshold: '1'
+        query: sum(rate(nginx_http_requests_total[2m]))

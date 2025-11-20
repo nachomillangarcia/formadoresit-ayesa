@@ -41,6 +41,26 @@ spec:
 ---
 
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-java
+data:
+  LOG_LEVEL: "INFO"
+  foo: bar
+  myvar: myvalue
+  message.txt: |
+    <html><body>
+      <h1>
+        Hello from Kubernetes version 3
+      </h1>
+      <p>
+        Served through configmap and ingress
+      </p>
+    </body></html>
+
+---
+
+apiVersion: v1
 kind: Service
 metadata:
   name: api-java
@@ -61,7 +81,7 @@ kind: Ingress
 metadata:
   name: java-api-ingress
 spec:
-  ingressClassName: public
+  ingressClassName: nginx-public
   rules:
   - host: api-java.18.153.62.218.sslip.io
     http:

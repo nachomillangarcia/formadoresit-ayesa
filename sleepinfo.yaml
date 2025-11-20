@@ -1,0 +1,30 @@
+apiVersion: kube-green.com/v1alpha1
+kind: SleepInfo
+metadata:
+  name: nginx
+spec:
+  weekdays: "1-5"
+  sleepAt: "18:07"
+  wakeUpAt: "17:45"
+  timeZone: "Europe/Madrid"
+  suspendCronJobs: false
+  suspendDeployments: true
+  suspendStatefulSets: true
+  includeRef:
+    - matchLabels: 
+        app: nginx
+  # excludeRef:
+  #   - apiVersion: "apps/v1"
+  #     kind:       Deployment
+  #     name:       api-gateway
+  patches:
+    - target:
+        group: keda.sh
+        kind: ScaledObject
+      patch: |-
+        - path: /spec/minReplicaCount
+          op: add
+          value: 0
+        - path: /spec/maxReplicaCount
+          op: add
+          value: 0
