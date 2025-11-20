@@ -61,6 +61,15 @@ jobs:
             name: output
             path: output.txt
 
+      # Conditional steps
+      - name: Run on push
+        if: github.event_name == 'push'
+        run: echo "This Job only triggers at push events"
+        
+      - name: Run on dispatch
+        if: github.event_name == 'workflow_dispatch'
+        run: echo "This Job only triggers at workflow_dispatch events"
+
   dependent:
     needs: showcase
     runs-on: ubuntu-24.04
