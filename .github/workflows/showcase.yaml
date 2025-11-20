@@ -35,3 +35,17 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+
+      - name: Use helm
+        run: helm -h
+
+      # Output
+      - name: Set outputs
+        id: set_outputs
+        run: |
+            echo "fruit=apple" >> $GITHUB_OUTPUT
+            echo "count=42" >> $GITHUB_OUTPUT     
+
+      - name: Read outputs
+        run: |
+            echo "I have ${{ steps.set_outputs.outputs.count }} ${{ steps.set_outputs.outputs.fruit }}(s)"
