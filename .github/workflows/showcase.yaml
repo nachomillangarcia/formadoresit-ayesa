@@ -49,3 +49,11 @@ jobs:
       - name: Read outputs
         run: |
             echo "I have ${{ steps.set_outputs.outputs.count }} ${{ steps.set_outputs.outputs.fruit }}(s)"
+
+      # Artifacts
+      - run: echo "This is an artifact" > output.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+            name: output
+            path: output.txt
