@@ -31,3 +31,7 @@ jobs:
           ls .
           pwd
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
