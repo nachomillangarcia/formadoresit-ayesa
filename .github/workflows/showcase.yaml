@@ -66,3 +66,14 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - run: echo "I have ${{ needs.showcase.outputs.count }} ${{ needs.showcase.outputs.fruit }}(s)"
+
+  using_container:
+    runs-on: ubuntu-24.04
+    container:
+      image: alpine/helm
+    steps:
+      # Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run helm
+        run: helm -h  
