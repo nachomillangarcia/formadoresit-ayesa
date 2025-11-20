@@ -23,4 +23,11 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."         
 
 
+      - name: Checkout repository
+        uses: actions/checkout@v4     
+
+      - name: List files in the repository
+        run: | 
+          ls .
+          pwd
 
