@@ -1,4 +1,4 @@
-tag: latest
+tag: v3
 deployment:
   replicas: 3
   strategy: RollingUpdate
@@ -14,25 +14,20 @@ deployment:
     requests:
       cpu: 100m
       memory: 200Mi
-
 configMap:
   enabled: true
   configs:
     myconfig1:
       name: config
-
 protocol: https
-
 volumeMounts:
-- name: config
-  path: /config 
-
+  - name: config
+    path: /config
 type: mytype
-
 mysql:
   enabled: true
   auth:
     rootPassword: "8QjKCL8iak"
-  image: 
+  image:
     repository: bitnamilegacy/mysql
     tag: 9.4.0
