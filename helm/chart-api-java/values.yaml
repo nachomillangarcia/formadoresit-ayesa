@@ -1,3 +1,4 @@
+tag: latest
 deployment:
   replicas: 3
   strategy: RollingUpdate

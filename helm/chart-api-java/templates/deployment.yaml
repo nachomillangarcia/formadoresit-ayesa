@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: nachomillangarcia/ayesa-java-api
+          image: nachomillangarcia/ayesa-java-api:{{ .Values.tag }}
           ports:
           {{- if eq $protocol "http" }}
           - containerPort: 8080

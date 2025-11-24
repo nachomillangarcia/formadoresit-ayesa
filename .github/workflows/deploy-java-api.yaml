@@ -1,0 +1,52 @@
+name: Delpoy Java API
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag Name'
+        required: true
+
+jobs:
+  update-image-tag:
+    runs-on: ubuntu-24.04
+    steps:        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 0
+
+    - name: Install yq
+      run: |
+        sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+        sudo chmod +x /usr/local/bin/yq
+    
+    - name: Set new docker image in values
+      run: |
+        yq -i '.tag = "${{ github.event.inputs.tag_name }}"' helm/chart-api-java/values.yaml
+
+    - name: Print values file
+      run: |
+        cat helm/chart-api-java/values.yaml
+
+    - name: Configure git user
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions@github.com"
+
+    - name: Check git status after force
+      run: git status
+
+    - name: Commit changes
+      run: |
+        # Only commit if there are changes
+        git diff --quiet && echo "No changes to commit" && exit 0
+        git add .
+        git commit -m "Update java-api values to ${{ github.event.inputs.tag_name }}"
+
+    - name: Push changes
+      run: |
+        # Determine the branch that triggered the run
+        BRANCH="${{ github.ref_name }}"
+        git push origin "HEAD:$BRANCH"
