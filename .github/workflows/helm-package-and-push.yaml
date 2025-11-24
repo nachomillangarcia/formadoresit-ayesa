@@ -1,0 +1,45 @@
+name: Package and Upload Helm Chart
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'helm/chart-api-java/**'
+
+  workflow_dispatch:
+
+
+jobs:
+  package-helm-chart:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      packages: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Package Helm Chart
+        run: |
+          cd helm
+          helm package chart-api-java --destination ./packaged
+
+      - name: Login to GitHub OCI Registry
+        run: |
+          echo "${{ secrets.ACCESS_TOKEN }}" | helm registry login -u ${{ github.actor }} --password-stdin ghcr.io
+
+      - name: Push Helm Chart
+        run: |
+          cd helm
+          tgz_file=$(find "packaged" -maxdepth 1 -type f -name "*.tgz" -print | sort | head -n 1)
+          helm push $tgz_file oci://ghcr.io/nachomillangarcia/formadoresit-ayesa
+
+      - name: Upload Helm Package as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: helm-chart-package
+          path: helm/packaged/*.tgz
+          retention-days: 7
+          if-no-files-found: error

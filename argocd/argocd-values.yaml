@@ -1,0 +1,4 @@
+server:
+  service:
+    type: NodePort
+    nodePortHttp: 30180
