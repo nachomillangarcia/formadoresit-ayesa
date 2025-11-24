@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: helm-chart-api-java
+  namespace: argocd
+spec:
+  project: ayesa
+  source:
+    repoURL: ghcr.io/nachomillangarcia/formadoresit-ayesa
+    chart: chart-api-java
+    targetRevision: "*"
+    helm:
+      releaseName: helm-chart-api-java
+      valuesObject:
+        deployment:
+          replicas: 2
+  destination:
+    name: "in-cluster"
+    namespace: default
