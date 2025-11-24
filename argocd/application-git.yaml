@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: git-api-java
+  namespace: argocd
+spec:
+  project: ayesa
+  destination:
+    namespace: default
+    server: https://kubernetes.default.svc
+  sources:
+  - repoURL: https://github.com/nachomillangarcia/formadoresit-ayesa.git
+    path: helm/chart-api-java
+    targetRevision: HEAD
+    # helm:
+      # valueFiles:
+      # - $values-repo/helm/java-api-values.yaml
+      
+  # - repoURL: 'https://github.com/nachomillangarcia/formadoresit-ayesa.git'
+  #   targetRevision: HEAD
+  #   ref: values-repo
+
+  syncPolicy:
+    automated:
+      enabled: true
+      selfHeal: true

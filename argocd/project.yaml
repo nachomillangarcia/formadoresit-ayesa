@@ -11,6 +11,7 @@ spec:
   sourceRepos:
   - formadoresit-ayesa
   - helm-formadoresit-ayesa
+  - https://github.com/nachomillangarcia/formadoresit-ayesa
   destinations:
   - namespace: default
     server: https://kubernetes.default.svc
