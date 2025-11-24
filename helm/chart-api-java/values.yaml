@@ -1,4 +1,4 @@
-tag: v3
+tag: v5
 deployment:
   replicas: 3
   strategy: RollingUpdate
