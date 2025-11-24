@@ -1,4 +1,4 @@
-tag: v5
+tag: 4c09f1a682329d272e5ed39f5203cb14eff7c848
 deployment:
   replicas: 3
   strategy: RollingUpdate
